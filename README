@@ -1,0 +1,37 @@
+== AttrEnum
+
+AttrEnum enables you to define ActiveRecord attributes like enums with specific values, names, and symbols
+
+== Example
+
+Assume user has a integer column status
+
+  class User < ActiveRecord::Base
+    attr_enum :status, {
+       :active => 1,
+       :was_suspended => 2,
+       :cancelled => 3,
+       :deleted => {:id => 4, :name => 'Deleted User'}
+     }
+
+    validates_inclusion_of :status, :in => Status.values
+  end
+
+Now you can do:
+
+  user.status = User::Status::Deleted
+  user.status_deleted? == true
+  user.status_name == 'Deleted User'
+
+and ...
+
+  user.status = User::Status::Active
+  user.status_active? == true
+  user.status_deleted? == false
+  user.status_name == 'Deleted'
+
+You can also get at an options list for forms:
+
+  User::Status.options = [['Active', '1'], ['Was Suspended', '2'], ['Cancelled', '3'], ['Deleted User','4']]
+
+Copyright (c) 2009 Kris Rasmussen, released under the MIT license
