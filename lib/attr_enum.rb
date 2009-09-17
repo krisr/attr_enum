@@ -23,24 +23,28 @@ module AttributeModifiers
           ids << id
           constant_name = sym.to_s.camelize
           id_to_name_map[id] = name
-          constant_defs << "#{constant_name} = #{id}"
-        
+          constant_defs << "#{constant_name} = #{id.inspect}"
+
           define_method "#{attr_name}_#{sym}?" do
             self.send(attr_name) == id
           end
+          
+          define_method "#{attr_name}_was_#{sym}?" do
+            self.send("#{attr_name}_was") == id
+          end
         end
-
+        
         options = ids.map { |id| 
           [id_to_name_map[id], id.to_s]
         }
-      
+        
         module_name = attr_name.to_s.camelize
         class_eval <<-eos
           module #{module_name}
             #{constant_defs.join("\n")}
 
             def #{module_name}.values
-              [#{ids.sort.join(",")}]
+              #{ids.inspect}
             end
             
             def #{module_name}.options
