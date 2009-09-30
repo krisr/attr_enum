@@ -5,11 +5,20 @@ module AttributeModifiers
     end
   
     module ClassMethods
-      def attr_enum(attr_name, enum_map)
+      def attr_enum(attr_name, enums)
         ids = []
         constant_defs = []
         id_to_name_map = {}
-        enum_map.each do |sym, opts|
+        
+        if enums.is_a?(Hash)
+          enums = enums.map {|sym, options| {sym => options}}
+        elsif !enums.is_a?(Array)
+          raise ArgumentError, "attr_enum second argument must be a hash or array"
+        end
+        
+        enums.each do |map|
+          sym = map.keys.first
+          opts = map.values.first
           case opts
             when Hash
               id = opts[:id]
