@@ -61,7 +61,7 @@ module AttributeModifiers
             end
             
             def #{module_name}.name_of(id)
-              #{options.inspect}[id]
+              #{id_to_name_map.inspect}[id]
             end
           end
         eos
